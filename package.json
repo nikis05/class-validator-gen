@@ -1,0 +1,21 @@
+{
+  "name": "class-validator-gen",
+  "version": "0.1.0",
+  "description": "Extracts metainformation from class-validator classes and generates schemas",
+  "main": "index.js",
+  "author": "nikis05",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "@types/glob": "^7.1.1",
+    "glob": "^7.1.6",
+    "typescript": "^3.9.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "example": "yarn build && node ./dist ./examples *.schema.ts ./output"
+  },
+  "peerDependencies": {
+    "class-validator": "^0.12.2"
+  }
+}
