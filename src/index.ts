@@ -11,6 +11,12 @@ const dist_dir = process.argv[4];
 const base = path.join(process.cwd(), base_dir);
 const dist = path.join(process.cwd(), dist_dir);
 
+// Check if dist directory exist
+if (!fs.existsSync(dist)) {
+    // Create directory path
+    fs.mkdirSync(dist, { recursive: true });
+}
+
 const getFileNames = (): string[] => glob.sync(source_glob, { cwd: base, absolute: true });
 
 interface File {
