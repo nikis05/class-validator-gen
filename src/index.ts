@@ -267,9 +267,12 @@ const emitSchemasFile = (validationSchemas: ValidationSchema[]): File => {
     name: 'registerSchemas.ts',
     content: [
       "import { registerSchema } from 'class-validator'",
-      `export type TValidationSchemas = ${validationSchemas
-        .map((validationSchema) => `"${validationSchema.name}"`)
-        .join(' | ')}`,
+      `export enum ValidationSchemas {${validationSchemas
+        .map(
+          (validationSchema) =>
+            `${validationSchema.name} = "${validationSchema.name}"`
+        )
+        .join(',')}}`,
       validationSchemas.map(
         (validationSchema) =>
           `registerSchema({
