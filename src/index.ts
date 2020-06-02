@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import glob from 'glob';
 import path from 'path';
 import fs from 'fs';
+import prettier from 'prettier';
 
 interface ValidationSchema {
   name: string;
@@ -252,7 +253,7 @@ const processSourceFile = (sourceFile: ts.SourceFile) => {
   return validationSchemas;
 };
 
-const emitSchemasFile = (validationShemas: ValidationSchema[]): File => {
+const emitSchemasFile = (validationSchemas: ValidationSchema[]): File => {
   const sourceFile = ts.createSourceFile(
     'registerSchemas.ts',
     '',
@@ -266,12 +267,15 @@ const emitSchemasFile = (validationShemas: ValidationSchema[]): File => {
     name: 'registerSchemas.ts',
     content: [
       "import { registerSchema } from 'class-validator'",
-      validationShemas.map(
-        (validationShema) =>
+      `export type TValidationSchemas = ${validationSchemas
+        .map((validationSchema) => `"${validationSchema.name}"`)
+        .join(' | ')}`,
+      validationSchemas.map(
+        (validationSchema) =>
           `registerSchema({
-            name: "${validationShema.name}",
+            name: "${validationSchema.name}",
             properties: {
-              ${Object.entries(validationShema.properties).map(
+              ${Object.entries(validationSchema.properties).map(
                 ([property, validators]) => `
                 ${property}: [
                   ${validators.map(
@@ -314,8 +318,18 @@ const emitSchemasFile = (validationShemas: ValidationSchema[]): File => {
   };
 };
 
+const formatContent = (content: string) => {
+  return prettier.format(content, {
+    semi: false,
+    parser: 'typescript',
+    trailingComma: 'none',
+  });
+};
+
 const writeFileToDisc = (file: File) => {
-  fs.writeFileSync(path.join(dist, file.name), file.content, { flag: 'w' });
+  fs.writeFileSync(path.join(dist, file.name), formatContent(file.content), {
+    flag: 'w',
+  });
 };
 
 const validationShemas = getFileNames()
