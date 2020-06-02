@@ -274,9 +274,10 @@ const emitSchemasFile = (validationSchemas: ValidationSchema[]): File => {
             `${validationSchema.name} = "${validationSchema.name}"`
         )
         .join(',')}}`,
-      validationSchemas.map(
-        (validationSchema) =>
-          `registerSchema({
+      validationSchemas
+        .map(
+          (validationSchema) =>
+            `registerSchema({
             name: "${validationSchema.name}",
             properties: {
               ${Object.entries(validationSchema.properties).map(
@@ -309,7 +310,7 @@ const emitSchemasFile = (validationSchemas: ValidationSchema[]): File => {
                           ? emitExpression(validator.groups)
                           : '[]'
                       }
-                    },
+                    }
                   `
                   )}
                 ]
@@ -317,7 +318,8 @@ const emitSchemasFile = (validationSchemas: ValidationSchema[]): File => {
               )}
             }
           })`
-      ),
+        )
+        .join('\n'),
     ].join('\n'),
   };
 };
