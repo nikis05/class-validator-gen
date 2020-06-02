@@ -266,6 +266,7 @@ const emitSchemasFile = (validationSchemas: ValidationSchema[]): File => {
   return {
     name: 'registerSchemas.ts',
     content: [
+      '/* eslint-disable */',
       "import { registerSchema } from 'class-validator'",
       `export enum ValidationSchemas {${validationSchemas
         .map(
